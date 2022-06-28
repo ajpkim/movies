@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def index(request):
-    return render(request, 'pick_movie/index.html')
+    return render(request, 'movie_selection/index.html')

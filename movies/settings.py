@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'channels',
-    'pick_movie',
+    'movie_selection',
 
     'django.contrib.admin',
     'django.contrib.auth',
