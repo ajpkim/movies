@@ -5,22 +5,25 @@
     <title>Movie Selection</title>
   </head>
   <body>
-    What movie would you like to nominate?<br>
-    <!-- <input id="room-name-input" type="text" size="100"><br> -->
-    <!-- <input id="room-name-submit" type="button" value="Enter"> -->
+    <p>Create a new room</p>
+    <input id="create-room-button" type="button" value="Create">
+    <br><br><br>
+    <p>Join an existing room</p>
+    <input id="join-room-input" type="text" size="25">
+    <input id="join-room-button" type="button" value="Join">
 
-    <!-- <script> -->
-    <!--   document.querySelector('#room-name-input').focus(); -->
-    <!--   document.querySelector('#room-name-input').onkeyup = function(e) { -->
-    <!--       if (e.keyCode === 13) {  // enter, return -->
-    <!--           document.querySelector('#room-name-submit').click(); -->
-    <!--       } -->
-    <!--   }; -->
-
-    <!--   document.querySelector('#room-name-submit').onclick = function(e) { -->
-    <!--       var roomName = document.querySelector('#room-name-input').value; -->
-    <!--       window.location.pathname = '/chat/' + roomName + '/'; -->
-    <!--   }; -->
-    <!-- </script> -->
+    <script>
+      document.querySelector('#join-room-input').focus();
+      document.querySelector('#join-room-input').onkeyup = function(e) {
+          if (e.keyCode === 13) {  // enter, return
+              document.querySelector('#join-room-button').click();
+          }
+      };
+      document.querySelector('#join-room-button').onclick = function(e) {
+          var roomName = document.querySelector('#join-room-input').value;
+	  console.log('trying to join an existing room called: ' + roomName);
+          window.location.pathname = '/movie_selection/' + roomName + '/';
+      };
+    </script>
   </body>
 </html>
