@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    {% load static %}
     <meta charset="utf-8"/>
     <title>Movie Selection Room</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'movie_selection/static-test.css' %}">
   </head>
   <body>
     <h2>Room: {{ room_name }}</h2>
+
+    {% include 'movie_selection/foo.html' %}
 
     <input id="nomination-input" type="text" size="50"><br>
     <input id="nomination-submit" type="button" value="Nominate">
