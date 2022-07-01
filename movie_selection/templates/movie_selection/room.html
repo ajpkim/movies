@@ -5,52 +5,58 @@
     <title>Movie Selection Room</title>
   </head>
   <body>
-    <h2>Room name: {{ room_name }}</h2>
+    <h2>Room: {{ room_name }}</h2>
 
-    <textarea id="chat-log" cols="50" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="50"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <input id="nomination-input" type="text" size="50"><br>
+    <input id="nomination-submit" type="button" value="Nominate">
 
-    <!-- Make Python object availble to JS as a json object -->
-    <p>{{ room_name|json_script:"room-name" }}</p>
+    {{ room_name|json_script:"room-name" }}
+
+    <h2>Movie Nominations</h2>
+    <div id="nominations-container">
+      <ol id="nominations-list">
+      </ol>
+    </div>
 
     <script>
       const roomName = JSON.parse(document.getElementById('room-name').textContent);
-      console.log("room name: " + roomName);
 
       // Establish WebSocket connection
-        const chatSocket = new WebSocket(
-            'ws://'
-                + window.location.host
-                + '/ws/movie_selection/'
-                + roomName
-                + '/'
-        );
+      const selectionSocket = new WebSocket(
+          'ws://'
+              + window.location.host
+              + '/ws/movie_selection/'
+              + roomName
+              + '/'
+      );
+      document.querySelector('#nomination-input').focus();
+      document.querySelector('#nomination-input').onkeyup = function(e) {
+          if (e.keyCode === 13) {  // enter, return
+              document.querySelector('#nomination-submit').click();
+          }
+      };
+      // Send nomination on input submit
+      document.querySelector('#nomination-submit').onclick = function(e) {
+          const nominationInput = document.querySelector('#nomination-input');
+          const nomination = nominationInput.value;
+          selectionSocket.send(JSON.stringify({
+              'nomination': nomination
+          }));
+          nominationInput.value = '';
+      };
 
-        chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.message + '\n');
-        };
+      // Add nominee to nomination list
+      selectionSocket.onmessage = function(e) {
+          const nomination = JSON.parse(e.data).nomination;
+	  const nominationList = document.querySelector('#nominations-list');
+	  const nominationLi = document.createElement('li');
+	  nominationLi.appendChild(document.createTextNode(nomination));
+	  nominationList.appendChild(nominationLi);
+      };
 
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        document.querySelector('#chat-message-input').focus();
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }
-        };
-
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            const messageInputDom = document.querySelector('#chat-message-input');
-            const message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            messageInputDom.value = '';
-        };
+      selectionSocket.onclose = function(e) {
+	  console.error('Selection socket closed unexpectedly');
+      }
     </script>
   </body>
 </html>
