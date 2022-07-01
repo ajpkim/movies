@@ -3,27 +3,16 @@
   <head>
     <meta charset="utf-8"/>
     <title>Movie Selection</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movie_selection/base.css' %}">
   </head>
   <body>
-    <p>Create a new room</p>
-    <input id="create-room-button" type="button" value="Create">
+    <h2>Create a new room</h2>
+    <input id="create-room-btn" type="button" value="Create">
     <br><br><br>
-    <p>Join an existing room</p>
+    <h2>Join an existing room</h2>
     <input id="join-room-input" type="text" size="25">
-    <input id="join-room-button" type="button" value="Join">
-
-    <script>
-      document.querySelector('#join-room-input').focus();
-      document.querySelector('#join-room-input').onkeyup = function(e) {
-          if (e.keyCode === 13) {  // enter, return
-              document.querySelector('#join-room-button').click();
-          }
-      };
-      document.querySelector('#join-room-button').onclick = function(e) {
-          var roomName = document.querySelector('#join-room-input').value;
-	  console.log('trying to join an existing room called: ' + roomName);
-          window.location.pathname = '/movie_selection/' + roomName + '/';
-      };
-    </script>
+    <input id="join-room-btn" type="button" value="Join">
+    <script src="{% static 'movie_selection/index.js' %}"></script>
   </body>
 </html>

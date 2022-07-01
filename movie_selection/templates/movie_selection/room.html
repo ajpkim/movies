@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    {% load static %}
     <meta charset="utf-8"/>
     <title>Movie Selection Room</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'movie_selection/static-test.css' %}">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'movie_selection/base.css' %}">
   </head>
   <body>
     <h2>Room: {{ room_name }}</h2>
-
-    {% include 'movie_selection/foo.html' %}
 
     <input id="nomination-input" type="text" size="50"><br>
     <input id="nomination-submit" type="button" value="Nominate">
@@ -21,46 +19,6 @@
       <ol id="nominations-list">
       </ol>
     </div>
-
-    <script>
-      const roomName = JSON.parse(document.getElementById('room-name').textContent);
-
-      // Establish WebSocket connection
-      const selectionSocket = new WebSocket(
-          'ws://'
-              + window.location.host
-              + '/ws/movie_selection/'
-              + roomName
-              + '/'
-      );
-      document.querySelector('#nomination-input').focus();
-      document.querySelector('#nomination-input').onkeyup = function(e) {
-          if (e.keyCode === 13) {  // enter, return
-              document.querySelector('#nomination-submit').click();
-          }
-      };
-      // Send nomination on input submit
-      document.querySelector('#nomination-submit').onclick = function(e) {
-          const nominationInput = document.querySelector('#nomination-input');
-          const nomination = nominationInput.value;
-          selectionSocket.send(JSON.stringify({
-              'nomination': nomination
-          }));
-          nominationInput.value = '';
-      };
-
-      // Add nominee to nomination list
-      selectionSocket.onmessage = function(e) {
-          const nomination = JSON.parse(e.data).nomination;
-	  const nominationList = document.querySelector('#nominations-list');
-	  const nominationLi = document.createElement('li');
-	  nominationLi.appendChild(document.createTextNode(nomination));
-	  nominationList.appendChild(nominationLi);
-      };
-
-      selectionSocket.onclose = function(e) {
-	  console.error('Selection socket closed unexpectedly');
-      }
-    </script>
+    <script src="{% static 'movie_selection/room.js' %}"></script>
   </body>
 </html>
