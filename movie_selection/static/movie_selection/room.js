@@ -23,14 +23,20 @@ document.querySelector('#nomination-input').onkeyup = function(e) {
 document.querySelector('#nomination-submit').onclick = function(e) {
     const nominationInput = document.querySelector('#nomination-input');
     const nomination = nominationInput.value;
+    console.log(nomination);
+
     selectionSocket.send(JSON.stringify({
-        'nomination': nomination
+        'nomination': nomination,
+	'aCOOLtest': "HIIIIIII",
     }));
     nominationInput.value = '';
 };
 
 // Add nominee to nomination list
 selectionSocket.onmessage = function(e) {
+
+    console.log("the TESTING field: " + JSON.parse(e.data).TESTING);
+
     const nomination = JSON.parse(e.data).nomination;
     const nominationList = document.querySelector('#nominations-list');
     const nominationLi = document.createElement('li');

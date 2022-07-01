@@ -26,20 +26,27 @@ class MovieSelectionConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         nomination = text_data_json['nomination']
 
+        print()
+        print(text_data)
+        print()
+
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
+                'type': 'movie_nomination',
                 'nomination': nomination,
+                'foobar': "HA, FOOBAR!",
             }
         )
 
     # Receive message from room group
-    async def chat_message(self, event):
+    async def movie_nomination(self, event):
         nomination = event['nomination']
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            'nomination': nomination
+            'nomination': nomination,
+            'TESTING': '?????',
+
         }))
