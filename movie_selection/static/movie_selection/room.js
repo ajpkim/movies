@@ -1,7 +1,9 @@
 /**
-  This script enables adding nominations to the movie selection room
-  nomination list using WebSockets.
+   This script enables adding nominations to the movie selection room
+   nomination list using WebSockets.
 **/
+
+console.log(window.location);
 
 const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -27,15 +29,12 @@ document.querySelector('#nomination-submit').onclick = function(e) {
 
     selectionSocket.send(JSON.stringify({
         'nomination': nomination,
-	'aCOOLtest': "HIIIIIII",
     }));
     nominationInput.value = '';
 };
 
 // Add nominee to nomination list
 selectionSocket.onmessage = function(e) {
-
-    console.log("the TESTING field: " + JSON.parse(e.data).TESTING);
 
     const nomination = JSON.parse(e.data).nomination;
     const nominationList = document.querySelector('#nominations-list');
