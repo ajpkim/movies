@@ -3,8 +3,6 @@
    nomination list using WebSockets.
 **/
 
-console.log(window.location);
-
 const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
 // Establish WebSocket connection
@@ -25,7 +23,6 @@ document.querySelector('#nomination-input').onkeyup = function(e) {
 document.querySelector('#nomination-submit').onclick = function(e) {
     const nominationInput = document.querySelector('#nomination-input');
     const nomination = nominationInput.value;
-    console.log(nomination);
 
     selectionSocket.send(JSON.stringify({
         'nomination': nomination,
@@ -35,7 +32,6 @@ document.querySelector('#nomination-submit').onclick = function(e) {
 
 // Add nominee to nomination list
 selectionSocket.onmessage = function(e) {
-
     const nomination = JSON.parse(e.data).nomination;
     const nominationList = document.querySelector('#nominations-list');
     const nominationLi = document.createElement('li');

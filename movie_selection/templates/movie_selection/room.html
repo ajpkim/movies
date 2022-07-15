@@ -16,8 +16,13 @@
 
     <h2>Movie Nominations</h2>
     <div id="nominations-container">
+
       <ol id="nominations-list">
+	{% for nom in nominations.all %}
+	<li>{{ nom.name }}</li>
+	{% endfor %}
       </ol>
+
     </div>
     <script src="{% static 'movie_selection/room.js' %}"></script>
   </body>
