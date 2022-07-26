@@ -33,7 +33,7 @@ document.querySelector('#nomination-submit').onclick = function(e) {
 // Add nominee to nomination list
 selectionSocket.onmessage = function(e) {
     const nomination = JSON.parse(e.data).nomination;
-    const nominationList = document.querySelector('#nominations-list');
+    const nominationList = document.querySelector('#nomination-list');
     const nominationLi = document.createElement('li');
     nominationLi.appendChild(document.createTextNode(nomination));
     nominationList.appendChild(nominationLi);

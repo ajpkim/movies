@@ -3,3 +3,10 @@ body {
     background: lightblue;
     line-height: 1.5;
 }
+
+#nomination-list {
+    background: lightgreen;
+}
+.nomination {
+    border: solid black;
+}
