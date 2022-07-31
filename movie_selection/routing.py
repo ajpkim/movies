@@ -1,7 +1,7 @@
 from django.urls import re_path
 
-from . import consumers
+from .consumers import MovieSelectionConsumer
 
 websocket_urlpatterns = [
-    re_path(r'ws/movie_selection/(?P<room_name>\w+)/$', consumers.MovieSelectionConsumer.as_asgi()),
+    re_path(r'(?P<room_name>\w+)/$', MovieSelectionConsumer.as_asgi()),
 ]

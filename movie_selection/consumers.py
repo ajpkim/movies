@@ -9,6 +9,7 @@ class MovieSelectionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print("WEBSOCKET CONNECTING")
 
+        await self.accept()
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'group_{self.room_name}'
 
@@ -17,7 +18,6 @@ class MovieSelectionConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        await self.accept()
 
     async def disconnect(self, close_code):
         # Leave room group
