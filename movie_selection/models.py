@@ -1,6 +1,6 @@
-from django.db import models
+from collections import Counter
 
-# Create your models here.
+from django.db import models
 
 class Room(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -8,6 +8,20 @@ class Room(models.Model):
     @property
     def nominations(self):
         return Nomination.objects.filter(room=self)
+
+    @property
+    def nominations_data(self) -> {str: {str: {int: int}}}:
+        """
+        Return data about each nomination attached to room and all the votes for those nominations.
+
+        TODO: Move serializer logic into serializer
+        """
+        data = []
+        for nomination in self.nominations:
+            nom_data = {'title': nomination.title}
+            nom_data['votes'] =  [{k:v} for k,v in nomination.votes.items()]  # This type of stuff should be in serializer...
+            data.append(nom_data)
+        return data
 
     def __str__(self):
         return f'<Room: {self.name}>'
@@ -19,11 +33,7 @@ class Nomination(models.Model):
     @property
     def votes(self):
         votes = Vote.objects.filter(nomination=self)
-        votes = [vote.vote for vote in votes]
-        return {
-            'votes_yes': sum(votes),
-            'votes_no': len(votes) - sum(votes)
-        }
+        return Counter([vote.vote for vote in votes])
 
     def __str__(self):
         return f'<Nomination: {self.title}, room={self.room.name}>'
@@ -35,3 +45,6 @@ class Vote(models.Model):
 
     def __str__(self):
         return f'<Vote: {self.vote}, nomination={self.nomination.title}>'
+
+
+# Create join tables with array aggreation with join using groupby?

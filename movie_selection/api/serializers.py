@@ -1,7 +1,11 @@
 from rest_framework import serializers
 
-from movie_selection.models import Nomination, Vote
+from movie_selection.models import Nomination, Room, Vote
 
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ['id', 'name']
 
 class NominationSerializer(serializers.ModelSerializer):
     class Meta:
