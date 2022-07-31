@@ -29,27 +29,53 @@ class MovieSelectionConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        title = text_data_json['title']
 
-        # Add new nomination to DB
-        # room = await database_sync_to_async(Room.objects.get)(name=self.room_name)
-        # nom = Nomination(name=nomination, room=room)
-        # await database_sync_to_async(nom.save)()
+        if text_data_json['type'] == 'nomination':
+            title = text_data_json['title']
+            # Add new nomination to DB
+            room = await database_sync_to_async(Room.objects.get)(name=self.room_name)
+            nomination = Nomination(name=title, room=room)
+            await database_sync_to_async(nomination.save)()
 
-        # Send message to room group
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'nomination',
-                'title': title,
-            }
-        )
+            # Send message to room group
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'nomination',
+                    'title': title,
+                    'votes_yes': 0,
+                    'votes_no': 0,
+                }
+            )
+
+        if text_data_json['type'] == 'vote':
+            print("A VOTEEEEEEE")
+        #     title = text_data_json['title']
+        #     # Add new nomination to DB
+        #     room = await database_sync_to_async(Room.objects.get)(name=self.room_name)
+        #     nomination = Nomination(name=title, room=room)
+        #     await database_sync_to_async(nomination.save)()
+
+        #     # Send message to room group
+        #     await self.channel_layer.group_send(
+        #         self.room_group_name,
+        #         {
+        #             'type': 'nomination',
+        #             'title': title,
+        #             'voted': 0,
+        #             'yes': 0,
+        #             'no': 0,
+        #         }
+        #     )
 
     # Receive message from room group
     async def nomination(self, event):
-        title = event['title']
-        # Send message to WebSocket
-        await self.send(text_data=json.dumps({
-            'type': 'nomination',
-            'title': title
-        }))
+
+        if event['type'] == 'nomination':
+            # Send message to WebSocket
+            await self.send(text_data=json.dumps({
+                'type': 'nomination',
+                'title': event['title'],
+                'votes_yes': event['votes_yes'],
+                'votes_no': event['votes_no'],
+            }))
