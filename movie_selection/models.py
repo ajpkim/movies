@@ -29,7 +29,7 @@ class Nomination(models.Model):
         return f'<Nomination: {self.title}, room={self.room.name}>'
 
 class Vote(models.Model):
-    vote = models.BooleanField()
+    vote = models.IntegerField()
     nomination = models.ForeignKey('Nomination', on_delete=models.CASCADE)
     # room = models.ForeignKey('Room', on_delete=models.CASCADE)
 
