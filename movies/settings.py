@@ -26,12 +26,16 @@ SECRET_KEY = 'django-insecure-_(gd-8@97*de&6nw60(4q=!bls_b8weel^^u(*f@y1v!#yu(lu
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 # Application definition
 
 INSTALLED_APPS = [
     'channels',
+    'corsheaders',
     'movie_selection',
     'rest_framework',
 
@@ -44,6 +48,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
