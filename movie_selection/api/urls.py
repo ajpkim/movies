@@ -3,11 +3,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from movie_selection.api import views
 
-# urlpatterns = [
-#     path('rooms/', views.room_list),
-#     path('rooms/<int:pk>/', views.room_detail),
-# ]
-
 urlpatterns = [
     path('rooms/', views.RoomList.as_view()),
     path('rooms/<int:pk>/', views.RoomDetail.as_view()),
