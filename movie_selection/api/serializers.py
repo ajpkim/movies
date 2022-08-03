@@ -20,6 +20,8 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class RoomDetailSerializer(serializers.ModelSerializer):
+    lookup_field = 'name'
+
     nominations = NominationSerializer(many=True, read_only=True)
 
     class Meta:

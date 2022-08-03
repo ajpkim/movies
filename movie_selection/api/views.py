@@ -9,5 +9,7 @@ class RoomList(generics.ListCreateAPIView):
     serializer_class = RoomSerializer
 
 class RoomDetail(generics.RetrieveAPIView):
+    lookup_field = 'name'
+
     queryset = Room.objects.all()
     serializer_class = RoomDetailSerializer
