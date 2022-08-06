@@ -25,40 +25,38 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     queryset = Room.objects.all()
     serializer_class = RoomDetailSerializer
 
-    # @model_observer(Nomination)
-    # async def nomination_activity_handler(self, message, observer=None, **kwargs):
-    #     breakpoint()
-    #     await self.send_json(message)
-
-    # @nomination_activity_handler.groups_for_signal
-    # async def nomination_activity_handler(self, instance: Nomination, **kwargs):
-    #     print('YOOO')
-    #     breakpoint()
-
-    # @action()
-    # async def subscribe_to_nomination(self, nomination, **kwargs):
-    #     print("subscribe_to_nomination called")
-    #     breakpoint()
-    #     await self.nomination_activity_handler.subscribe(nomination=nomination)
-    #     return {}, 201
-
-    ##################################################
-
-    # @model_observer(Room, serializer_class=RoomDetailSerializer)
-    # async def room_activity_handler(self, message, action, name, **kwargs):
-    #     print("\n\nTrying to do some room subscription stuff ...\n\n")
-    #     await
-    #     breakpoint()
-
-
-
-
     @model_observer(Nomination, serializer_class=NominationSerializer)
     async def nomination_activity_handler(self, data, subscribing_request_ids=[], **kwargs):
-        print("\n\nTrying to do some nomination sub stuff...\n\n")
         for request_id in subscribing_request_ids:
             data['request_id'] = request_id
-            await self.reply(action="HAHA", data=data)
+            await self.reply(action="subscribe_to_nomination", data=data)
+
+    @nomination_activity_handler.groups_for_consumer
+    def nomination_activity_handler(self, room=None, **kwargs):
+        """Add the consumer to the correct groups given the context we receive here."""
+        print("\nCONSUMER GROUP STUFF\n")
+        # yield f'-room__{room.name}'
+
+        if room is not None:
+            yield f'-title__HAHAHA'
+
+
+    @nomination_activity_handler.groups_for_signal
+    def nomination_activity_handler(self, instance: Nomination, **kwargs):
+        """Broadcast activity to the correct consumers based on the groups this signal is relevant for."""
+        print("\nSIGNAL GROUP STUFF\n")
+        yield f'-title__{instance.title}'
+
+    @action()
+    async def subscribe_to_nomination(self, action: str, room_name: str, title: str, request_id: int):
+        """We will use these args later to filter out the specific stuff we care about"""
+
+        print("\n\nsubscribe_to_nomination called\n\n")
+        room = await database_sync_to_async(Room.objects.get)(name=room_name)
+
+        await self.nomination_activity_handler.subscribe(request_id=request_id, room=room)
+
+
 
 
     # @model_observer(Nomination)
@@ -86,16 +84,6 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     #     await self.room_activity_handler.subscribe(name=name)
     #     return {"some DATA": 333}, 201
 
-    @action()
-    async def subscribe_to_nomination(self, action: str, room_name: str, title: str, request_id: int):
-        """We will use these args later to filter out the specific stuff we care about"""
-
-        print("\n\nsubscribe_to_nomination called\n\n")
-
-        # await self.nomination_activity_handler.subscribe(room_name=room_name, title=title)
-        #  await self.nomination_activity_handler.subscribe(request_id=request_id)
-
-        await self.nomination_activity_handler.subscribe(request_id=request_id)
 
 
 

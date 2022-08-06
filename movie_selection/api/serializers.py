@@ -9,6 +9,7 @@ class VoteSerializer(serializers.ModelSerializer):
 
 class NominationSerializer(serializers.ModelSerializer):
     votes = VoteSerializer(many=True)
+    # TODO: add room name here in some way??
 
     class Meta:
         model = Nomination
