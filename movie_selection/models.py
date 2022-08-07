@@ -18,7 +18,7 @@ class Room(models.Model):
         return f'<Room: {self.name}>'
 
 class Nomination(models.Model):
-    room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='room')
+    room = models.ForeignKey('Room', on_delete=models.CASCADE)  #, related_name='room')
     title = models.CharField(max_length=100, unique=False)
 
     @property
@@ -33,8 +33,9 @@ class Nomination(models.Model):
         return f'<Nomination: {self.title}, room={self.room.name}>'
 
 class Vote(models.Model):
+    room = models.ForeignKey('Room', on_delete=models.CASCADE)  #, related_name='room')
     nomination = models.ForeignKey('Nomination', on_delete=models.CASCADE, related_name='nomination')
     vote = models.IntegerField()
 
     def __str__(self):
-        return f'<Vote: {self.vote}, nomination={self.nomination.title}>'
+        return f'<Vote: {self.vote}, room={self.room.name}, nomination={self.nomination.title}>'

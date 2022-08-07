@@ -3,17 +3,20 @@ from rest_framework import serializers
 from movie_selection.models import Nomination, Room, Vote
 
 class VoteSerializer(serializers.ModelSerializer):
+    room_name = serializers.ReadOnlyField(source='room.name')
+    nomination_title = serializers.ReadOnlyField(source='nomination.title')
+
     class Meta:
         model = Vote
-        fields = ['vote']
+        fields = ['room_name', 'nomination_title', 'vote']
 
 class NominationSerializer(serializers.ModelSerializer):
+    room_name = serializers.ReadOnlyField(source='room.name')
     votes = VoteSerializer(many=True)
-    # TODO: add room name here in some way??
 
     class Meta:
         model = Nomination
-        fields = ['id', 'title', 'votes']
+        fields = ['id', 'room_name', 'title', 'votes']
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,7 +25,6 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class RoomDetailSerializer(serializers.ModelSerializer):
     lookup_field = 'name'
-
     nominations = NominationSerializer(many=True, read_only=True)
 
     class Meta:
