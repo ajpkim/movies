@@ -27,6 +27,12 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     ################################################################################
     # NOMINATION
     ################################################################################
+    @action()
+    async def create_nomination(self, room_name, title, **kwargs):
+        room = await database_sync_to_async(Room.objects.get)(name=room_name)
+        nomination = Nomination(room=room, title=title)
+        await database_sync_to_async(nomination.save)()
+
     @model_observer(Nomination, serializer_class=NominationSerializer)
     async def nomination_activity_handler(self, data, subscribing_request_ids=[], **kwargs):
         for request_id in subscribing_request_ids:
@@ -52,6 +58,14 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     ################################################################################
     # VOTE
     ################################################################################
+    @action()
+    async def create_vote(self, room_name, nomination_title, vote, **kwargs):
+    ## async def create_vote(self, **kwargs):
+        room = await database_sync_to_async(Room.objects.get)(name=room_name)
+        nomination = await database_sync_to_async(Nomination.objects.get)(room=room, title=nomination_title)
+        vote = Vote(room=room, nomination=nomination, vote=vote)
+        await database_sync_to_async(vote.save)()
+
     @model_observer(Vote, serializer_class=VoteSerializer)
     async def vote_activity_handler(self, data, subscribing_request_ids=[], **kwargs):
         for request_id in subscribing_request_ids:
