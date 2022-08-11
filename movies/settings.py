@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+AUTH_USER_MODEL = 'movie_selection.User'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 

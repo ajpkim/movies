@@ -1,3 +1,11 @@
+"""
+WebSocket REST-like API.
+
+Clients can subscribe to DB Model activity and listen for updates to
+Models in their context, such as for new instances relevant to their
+activities. Filtered messages are then broadcast to the appropriate
+groups following Model activity.
+"""
 import json
 
 from asgiref.sync import async_to_sync
@@ -16,7 +24,7 @@ from djangochannelsrestframework.mixins import (
     UpdateModelMixin,
 )
 
-from .models import Nomination, Room, Vote
+from .models import Nomination, Room, User, Vote
 from movie_selection.api.serializers import RoomDetailSerializer, NominationSerializer, VoteSerializer
 
 class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer):
@@ -28,9 +36,10 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     # NOMINATION
     ################################################################################
     @action()
-    async def create_nomination(self, room_name, title, **kwargs):
+    async def create_nomination(self, room_name, title, user_id, **kwargs):
         room = await database_sync_to_async(Room.objects.get)(name=room_name)
-        nomination = Nomination(room=room, title=title)
+        user = await database_sync_to_async(User.objects.get)(id=user_id)
+        nomination = Nomination(room=room, title=title, user=user)
         await database_sync_to_async(nomination.save)()
 
     @model_observer(Nomination, serializer_class=NominationSerializer)
@@ -59,11 +68,11 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     # VOTE
     ################################################################################
     @action()
-    async def create_vote(self, room_name, nomination_title, vote, **kwargs):
-    ## async def create_vote(self, **kwargs):
+    async def create_vote(self, room_name, nomination_title, vote, user_id, **kwargs):
         room = await database_sync_to_async(Room.objects.get)(name=room_name)
         nomination = await database_sync_to_async(Nomination.objects.get)(room=room, title=nomination_title)
-        vote = Vote(room=room, nomination=nomination, vote=vote)
+        user = await database_sync_to_async(User.objects.get)(id=user_id)
+        vote = Vote(room=room, nomination=nomination, vote=vote, user=user)
         await database_sync_to_async(vote.save)()
 
     @model_observer(Vote, serializer_class=VoteSerializer)

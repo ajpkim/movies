@@ -1,8 +1,18 @@
+import uuid
 from collections import Counter
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+class User(AbstractUser):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
+    # USERNAME_FIELD = 'id'  # Set this in the model create method
+
+    def __str__(self):
+        return str(self.id)
+
 class Room(models.Model):
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=50, unique=True)
 
     @property
@@ -18,6 +28,7 @@ class Room(models.Model):
         return f'<Room: {self.name}>'
 
 class Nomination(models.Model):
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     room = models.ForeignKey('Room', on_delete=models.CASCADE)  #, related_name='room')
     title = models.CharField(max_length=100, unique=False)
 
@@ -33,6 +44,7 @@ class Nomination(models.Model):
         return f'<Nomination: {self.title}, room={self.room.name}>'
 
 class Vote(models.Model):
+    user = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
     room = models.ForeignKey('Room', on_delete=models.CASCADE)  #, related_name='room')
     nomination = models.ForeignKey('Nomination', on_delete=models.CASCADE, related_name='nomination')
     vote = models.IntegerField()
