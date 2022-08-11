@@ -38,6 +38,13 @@ class RoomSerializer(serializers.ModelSerializer):
         model = Room
         fields = ['id', 'name']
 
+    def create(self, validated_data):
+        """TODO: Remove the need to send this empty name data from client."""
+        name = str(uuid.uuid4())
+        room = Room(name=name)
+        room.save()
+        return room
+
 class RoomDetailSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.id', read_only=True)
     lookup_field = 'name'

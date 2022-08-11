@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from movie_selection.models import Nomination, Room, User, Vote
 from movie_selection.api.serializers import RoomDetailSerializer, RoomSerializer, UserSerializer
 
+class RoomCreateAPIView(generics.CreateAPIView):
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
 class RoomList(generics.ListCreateAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer

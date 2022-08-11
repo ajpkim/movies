@@ -38,6 +38,11 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     @action()
     async def create_nomination(self, room_name, title, user_id, **kwargs):
         room = await database_sync_to_async(Room.objects.get)(name=room_name)
+        # breakpoint()
+        # room_nom_titles = database_sync_to_async(room.nominations)()
+        # if any([nom_title == title for nom in room_nom_titles]):
+        #     print("Repeat nomination")
+        #     return
         user = await database_sync_to_async(User.objects.get)(id=user_id)
         nomination = Nomination(room=room, title=title, user=user)
         await database_sync_to_async(nomination.save)()
