@@ -1,3 +1,5 @@
+import uuid
+
 from rest_framework import serializers
 
 from movie_selection.models import Nomination, Room, User, Vote
@@ -32,6 +34,7 @@ class NominationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nomination
         fields = ['id', 'user', 'room_name', 'title', 'votes']
+
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
