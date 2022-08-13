@@ -80,6 +80,10 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
         vote = Vote(room=room, nomination=nomination, vote=vote, user=user)
         await database_sync_to_async(vote.save)()
 
+    # TODO
+    async def update_vote(self, room_name, nomination_title, vote, user_id, **kwargs):
+        pass
+
     @model_observer(Vote, serializer_class=VoteSerializer)
     async def vote_activity_handler(self, data, subscribing_request_ids=[], **kwargs):
         for request_id in subscribing_request_ids:

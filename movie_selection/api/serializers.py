@@ -1,8 +1,9 @@
-import uuid
+import random
 
 from rest_framework import serializers
 
 from movie_selection.models import Nomination, Room, User, Vote
+
 
 class UserSerializer(serializers.ModelSerializer):
     id = serializers.CharField(read_only=True)
@@ -42,8 +43,16 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
     def create(self, validated_data):
-        """TODO: Remove the need to send this empty name data from client."""
-        name = str(uuid.uuid4())
+        """TODO: Remove the need to send this empty name data ('validated_data') from client."""
+
+        def create_room_name(word_file: str) -> str:
+            with open(word_file, 'r') as file:
+                words = file.read().split()
+            room_words = random.choices(words, k=3)
+            return '-'.join(room_words)
+
+        word_file = 'common-5-letter-eng-words.txt'
+        name = create_room_name(word_file)
         room = Room(name=name)
         room.save()
         return room
