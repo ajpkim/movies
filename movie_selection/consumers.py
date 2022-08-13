@@ -105,3 +105,16 @@ class RoomConsumer(RetrieveModelMixin, CreateModelMixin, GenericAsyncAPIConsumer
     async def subscribe_to_room_votes(self, action: str, room_name: str, request_id: int):
         room = await database_sync_to_async(Room.objects.get)(name=room_name)
         await self.vote_activity_handler.subscribe(request_id=request_id, room=room)
+
+    ################################################################################
+
+    # TODO: setup the movie titles file appropriately
+    @action()
+    async def get_movie_titles(self, *args, **kwargs):
+        with open('movie_selection/movie_titles.txt', 'r') as file:
+            titles = file.read().split('\n')
+        data = {
+            'titles': titles
+        }
+
+        return data, 200
